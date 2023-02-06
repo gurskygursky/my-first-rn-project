@@ -1,5 +1,5 @@
 import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useState} from "react";
 import Checkbox from 'expo-checkbox';
 import {CustomInput} from "./Input";
@@ -27,9 +27,20 @@ export default function App() {
         setTasks(tasks.map(task => task.id === taskID ? {...task, title: value} : task));
     }
 
+    const addTask = () => {
+        const newTask = {id: tasks.length + 1, title: value, isDone: false};
+        setTasks([newTask, ...tasks]);
+        setValue('');
+    }
+
+    console.log(tasks);
+
     return (
         <View style={styles.container}>
-            <TextInput style={styles.input} value={value} onChangeText={setValue}/>
+            <View style={{width: '80%', flexDirection: 'row'}}>
+                <TextInput style={styles.input} value={value} onChangeText={setValue}/>
+                <Button title={'Add'} onPress={addTask}/>
+            </View>
             <View>
                 {
                     tasks.map((task: TaskType) => <View key={task.id} style={styles.checkboxContainer}>
@@ -38,8 +49,8 @@ export default function App() {
                         {
                             edit === task.id
                                 ? <CustomInput taskID={task.id} value={task.title}
-                                         callback={(taskID, value) => changeTaskTitle(task.id, value)}
-                                         setEdit={setEdit}
+                                               callback={(taskID, value) => changeTaskTitle(task.id, value)}
+                                               setEdit={setEdit}
                                 />
 
                                 : <Text onPress={() => setEdit(task.id)}>{task.title}</Text>
@@ -60,7 +71,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     input: {
-        width: '80%',
+        width: '50%',
         borderStyle: 'solid',
         borderColor: '#fff',
         borderRadius: 3,
